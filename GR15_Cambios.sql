@@ -156,15 +156,38 @@ FOR EACH ROW EXECUTE PROCEDURE trfn_gr15_controlarCompetenciaGrupal();
 create view vw_gr15_ordenarCompenciasPorDisciplinas 
 as select * 
 from gr15_competencia
-order by cdodisciplina
+order by cdodisciplina;
 
 
 
 --d2 revisar
-select distinct c.idcompetencia
+create view vw_gr15_mostrarCompetenciasConDeportistasSinclasificar
+as select distinct c.idcompetencia
 from gr15_competencia c, gr15_clasificacioncompetencia cc, gr15_inscripcion i
 where  i.idcompetencia = cc.idcompetencia
 and i.tipodoc = cc.tipodoc 
 and i.nrodoc = cc.nrodoc
 and cc.puntosGeneral is null
-or cc.puntosCategoria is null
+or cc.puntosCategoria is null;
+
+
+--- otra parte que puede ayudar al d2
+
+SELECT distinct i.idcompetencia
+FROM gr15_clasificacioncompetencia cc
+LEFT JOIN gr15_inscripcion i
+ON cc.idcompetencia = i.idcompetencia
+where cc.nrodoc is not = i.nrodoc
+and cc.tipodoc is not = i.nrodoc;
+
+
+
+--d3 anda joya, ver si se puede mejorar el tema de los nombres, trando de acortar, ej, gr15_deportista d, tira errores
+create view vw_gr15_mostrarPuntosDeportistaAnioActual
+as SELECT gr15_deportista.nrodoc ,sum( gr15_clasificacioncompetencia.puntoscategoria) as puntos_categoria, sum(gr15_clasificacioncompetencia.puntosgeneral) as puntos_general
+FROM gr15_deportista 
+INNER JOIN gr15_clasificacioncompetencia on ( gr15_deportista.nrodoc = gr15_clasificacioncompetencia.nrodoc)
+where gr15_clasificacioncompetencia.idcompetencia in (SELECT distinct cc.idCompetencia
+FROM gr15_clasificacioncompetencia cc, gr15_competencia c 
+WHERE date_part('year', c.fecha) = date_part('year', CURRENT_DATE))
+group by gr15_deportista.nrodoc;
