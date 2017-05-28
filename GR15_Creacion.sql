@@ -134,7 +134,7 @@ CREATE TABLE GR15_Persona (
 
 -- foreign keys
 -- Reference: fk_ClasificacionCompetencia_Competencia (table: GR15_ClasificacionCompetencia)
-ALTER TABLE GR15_ClasificacionCompetencia ADD CONSTRAINT fk_ClasificacionCompetencia_Competencia
+ALTER TABLE GR15_ClasificacionCompetencia ADD CONSTRAINT fk_GR15_ClasificacionCompetencia_Competencia
     FOREIGN KEY (idCompetencia)
     REFERENCES GR15_Competencia (idCompetencia)  
     NOT DEFERRABLE 
@@ -142,7 +142,7 @@ ALTER TABLE GR15_ClasificacionCompetencia ADD CONSTRAINT fk_ClasificacionCompete
 ;
 
 -- Reference: fk_ClasificacionCompetencia_Deportista (table: GR15_ClasificacionCompetencia)
-ALTER TABLE GR15_ClasificacionCompetencia ADD CONSTRAINT fk_ClasificacionCompetencia_Deportista
+ALTER TABLE GR15_ClasificacionCompetencia ADD CONSTRAINT fk_GR15_ClasificacionCompetencia_Deportista
     FOREIGN KEY (tipoDoc, nroDoc)
     REFERENCES GR15_Deportista (tipoDoc, nroDoc)  
     NOT DEFERRABLE 
@@ -150,7 +150,7 @@ ALTER TABLE GR15_ClasificacionCompetencia ADD CONSTRAINT fk_ClasificacionCompete
 ;
 
 -- Reference: fk_Competencia_Disciplina (table: GR15_Competencia)
-ALTER TABLE GR15_Competencia ADD CONSTRAINT fk_Competencia_Disciplina
+ALTER TABLE GR15_Competencia ADD CONSTRAINT fk_GR15_Competencia_Disciplina
     FOREIGN KEY (cdoDisciplina)
     REFERENCES GR15_Disciplina (cdoDisciplina)  
     NOT DEFERRABLE 
@@ -158,7 +158,7 @@ ALTER TABLE GR15_Competencia ADD CONSTRAINT fk_Competencia_Disciplina
 ;
 
 -- Reference: fk_Deportista_Categoria (table: GR15_Deportista)
-ALTER TABLE GR15_Deportista ADD CONSTRAINT fk_Deportista_Categoria
+ALTER TABLE GR15_Deportista ADD CONSTRAINT fk_GR15_Deportista_Categoria
     FOREIGN KEY (cdoCategoria, cdoDisciplina)
     REFERENCES GR15_Categoria (cdoCategoria, cdoDisciplina)  
     NOT DEFERRABLE 
@@ -166,7 +166,7 @@ ALTER TABLE GR15_Deportista ADD CONSTRAINT fk_Deportista_Categoria
 ;
 
 -- Reference: fk_Deportista_Federacion (table: GR15_Deportista)
-ALTER TABLE GR15_Deportista ADD CONSTRAINT fk_Deportista_Federacion
+ALTER TABLE GR15_Deportista ADD CONSTRAINT fk_GR15_Deportista_Federacion
     FOREIGN KEY (cdoFederacion, cdoDisciplinaFederacion)
     REFERENCES GR15_Federacion (cdoFederacion, cdoDisciplina)  
     NOT DEFERRABLE 
@@ -174,7 +174,7 @@ ALTER TABLE GR15_Deportista ADD CONSTRAINT fk_Deportista_Federacion
 ;
 
 -- Reference: fk_Deportista_Persona (table: GR15_Deportista)
-ALTER TABLE GR15_Deportista ADD CONSTRAINT fk_Deportista_Persona
+ALTER TABLE GR15_Deportista ADD CONSTRAINT fk_GR15_Deportista_Persona
     FOREIGN KEY (tipoDoc, nroDoc)
     REFERENCES GR15_Persona (tipoDoc, nroDoc)  
     NOT DEFERRABLE 
@@ -182,7 +182,7 @@ ALTER TABLE GR15_Deportista ADD CONSTRAINT fk_Deportista_Persona
 ;
 
 -- Reference: fk_EquipoDeportista_Deportista (table: GR15_EquipoDeportista)
-ALTER TABLE GR15_EquipoDeportista ADD CONSTRAINT fk_EquipoDeportista_Deportista
+ALTER TABLE GR15_EquipoDeportista ADD CONSTRAINT fk_GR15_EquipoDeportista_Deportista
     FOREIGN KEY (tipoDoc, nroDoc)
     REFERENCES GR15_Deportista (tipoDoc, nroDoc)  
     NOT DEFERRABLE 
@@ -190,7 +190,7 @@ ALTER TABLE GR15_EquipoDeportista ADD CONSTRAINT fk_EquipoDeportista_Deportista
 ;
 
 -- Reference: fk_EquipoDeportista_Equipo (table: GR15_EquipoDeportista)
-ALTER TABLE GR15_EquipoDeportista ADD CONSTRAINT fk_EquipoDeportista_Equipo
+ALTER TABLE GR15_EquipoDeportista ADD CONSTRAINT fk_GR15_EquipoDeportista_Equipo
     FOREIGN KEY (id)
     REFERENCES GR15_Equipo (id)  
     NOT DEFERRABLE 
@@ -198,7 +198,7 @@ ALTER TABLE GR15_EquipoDeportista ADD CONSTRAINT fk_EquipoDeportista_Equipo
 ;
 
 -- Reference: fk_Federacion_Disciplina (table: GR15_Federacion)
-ALTER TABLE GR15_Federacion ADD CONSTRAINT fk_Federacion_Disciplina
+ALTER TABLE GR15_Federacion ADD CONSTRAINT fk_GR15_Federacion_Disciplina
     FOREIGN KEY (cdoDisciplina)
     REFERENCES GR15_Disciplina (cdoDisciplina)  
     NOT DEFERRABLE 
@@ -206,7 +206,7 @@ ALTER TABLE GR15_Federacion ADD CONSTRAINT fk_Federacion_Disciplina
 ;
 
 -- Reference: fk_Inscripcion_Competencia (table: GR15_Inscripcion)
-ALTER TABLE GR15_Inscripcion ADD CONSTRAINT fk_Inscripcion_Competencia
+ALTER TABLE GR15_Inscripcion ADD CONSTRAINT fk_GR15_Inscripcion_Competencia
     FOREIGN KEY (idCompetencia)
     REFERENCES GR15_Competencia (idCompetencia)  
     NOT DEFERRABLE 
@@ -214,7 +214,7 @@ ALTER TABLE GR15_Inscripcion ADD CONSTRAINT fk_Inscripcion_Competencia
 ;
 
 -- Reference: fk_Inscripcion_Deportista (table: GR15_Inscripcion)
-ALTER TABLE GR15_Inscripcion ADD CONSTRAINT fk_Inscripcion_Deportista
+ALTER TABLE GR15_Inscripcion ADD CONSTRAINT fk_GR15_Inscripcion_Deportista
     FOREIGN KEY (tipoDoc, nroDoc)
     REFERENCES GR15_Deportista (tipoDoc, nroDoc)  
     NOT DEFERRABLE 
@@ -222,7 +222,7 @@ ALTER TABLE GR15_Inscripcion ADD CONSTRAINT fk_Inscripcion_Deportista
 ;
 
 -- Reference: fk_Inscripcion_Equipo (table: GR15_Inscripcion)
-ALTER TABLE GR15_Inscripcion ADD CONSTRAINT fk_Inscripcion_Equipo
+ALTER TABLE GR15_Inscripcion ADD CONSTRAINT fk_GR15_Inscripcion_Equipo
     FOREIGN KEY (Equipo_id)
     REFERENCES GR15_Equipo (id)  
     NOT DEFERRABLE 
@@ -230,7 +230,7 @@ ALTER TABLE GR15_Inscripcion ADD CONSTRAINT fk_Inscripcion_Equipo
 ;
 
 -- Reference: fk_JuezCompetencia_Competencia (table: GR15_JuezCompetencia)
-ALTER TABLE GR15_JuezCompetencia ADD CONSTRAINT fk_JuezCompetencia_Competencia
+ALTER TABLE GR15_JuezCompetencia ADD CONSTRAINT fk_GR15_JuezCompetencia_Competencia
     FOREIGN KEY (idCompetencia)
     REFERENCES GR15_Competencia (idCompetencia)  
     NOT DEFERRABLE 
@@ -238,7 +238,7 @@ ALTER TABLE GR15_JuezCompetencia ADD CONSTRAINT fk_JuezCompetencia_Competencia
 ;
 
 -- Reference: fk_JuezCompetencia_Juez (table: GR15_JuezCompetencia)
-ALTER TABLE GR15_JuezCompetencia ADD CONSTRAINT fk_JuezCompetencia_Juez
+ALTER TABLE GR15_JuezCompetencia ADD CONSTRAINT fk_GR15_JuezCompetencia_Juez
     FOREIGN KEY (tipoDoc, nroDoc)
     REFERENCES GR15_Juez (tipoDoc, nroDoc)  
     NOT DEFERRABLE 
@@ -263,6 +263,10 @@ ALTER TABLE GR15_Categoria ADD CONSTRAINT fk_categoria_disciplina
 
 -- End of file.
 
+--Modificaciones necesarias
+ALTER TABLE GR15_equipodeportista 
+    ADD COLUMN fecha_inscripcion TIMESTAMP not null
+;
 
 
 --PUNTO A
@@ -447,18 +451,18 @@ INSERT INTO gr15_inscripcion (id,tipoDoc,nroDoc,Equipo_id,idCompetencia,fecha)
 
 --insert tabla EquipoDeportista 
 
-INSERT INTO gr15_equipodeportista  (id,tipoDoc,nroDoc)
-    VALUES (1,'dni',33242190);
-INSERT INTO gr15_equipodeportista  (id,tipoDoc,nroDoc)
-    VALUES (1,'dni',32383548);
-INSERT INTO gr15_equipodeportista  (id,tipoDoc,nroDoc)
-    VALUES (2,'lc',1055587);
-INSERT INTO gr15_equipodeportista  (id,tipoDoc,nroDoc)
-    VALUES (3,'dni',31342131);
-INSERT INTO gr15_equipodeportista  (id,tipoDoc,nroDoc)
-    VALUES (4,'dni',33342131);
-INSERT INTO gr15_equipodeportista  (id,tipoDoc,nroDoc)
-    VALUES (5,'dni',40212589);
+INSERT INTO gr15_equipodeportista  (id,tipoDoc,nroDoc,fecha_inscripcion)
+    VALUES (1,'dni',33242190,'2017/04/07');
+INSERT INTO gr15_equipodeportista  (id,tipoDoc,nroDoc,fecha_inscripcion)
+    VALUES (1,'dni',32383548,'2017/03/07');
+INSERT INTO gr15_equipodeportista  (id,tipoDoc,nroDoc,fecha_inscripcion)
+    VALUES (2,'lc',1055587,'2017/05/07');
+INSERT INTO gr15_equipodeportista  (id,tipoDoc,nroDoc,fecha_inscripcion)
+    VALUES (3,'dni',31342131,'2017/02/07');
+INSERT INTO gr15_equipodeportista  (id,tipoDoc,nroDoc,fecha_inscripcion)
+    VALUES (4,'dni',33342131,'2017/01/07');
+INSERT INTO gr15_equipodeportista  (id,tipoDoc,nroDoc,fecha_inscripcion)
+    VALUES (5,'dni',40212589,'2017/03/07');
 
 --insert tabla ClasificacionCompetencia
 

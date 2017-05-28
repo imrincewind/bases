@@ -1,12 +1,12 @@
 --Punto B-a
 
-CREATE OR REPLACE FUNCTION FN_GR15_controlarCantJueces()
+CREATE OR REPLACE FUNCTION TRFN_GR15_controlarCantJueces()
 returns trigger AS $$
 DECLARE
 BEGIN
 if((select c.cantJueces
 from GR15_competencia c
-where (c.idCompetencia = new.idCompetencia)) <
+where (c.idCompetencia = new.idCompetencia)) >
 (select count (jc.nrodoc) 
 from GR15_juezcompetencia jc
 where (jc.idCompetencia = new.idCompetencia)))
@@ -21,24 +21,22 @@ language 'plpgsql';
 
 --TRIGGER
 
-CREATE TRIGGER tr_controlarcantjueces 
+CREATE TRIGGER tr_gr15_controlarcantjueces 
 AFTER INSERT ON gr15_juezcompetencia 
 FOR EACH ROW EXECUTE PROCEDURE fn_gr15_controlarcantjueces();
 
---Punto B-b cambiar de lugar las cosas, probablemente a equipodeportista probablemente ghacer un alter table para que la fecha NOT null
+--Punto B-b 
 
-CREATE OR REPLACE FUNCTION FN_GR15_controlarCantEquiposAnual()
+CREATE OR REPLACE FUNCTION TRFN_GR15_controlarCantEquiposAnual()
 returns trigger AS $$
 DECLARE
 BEGIN
 if((
-select count (distinct i.id)
-from  gr15_inscripcion i
-where (i.tipoDoc = new.tipoDoc)
-and (i.nroDoc = new.nroDoc)
-and (i.equipo_id IS NOT null)
-and (new.equipo_id IS NOT null)
-and (extract (year from i.fecha)) = (extract (year from new.fecha))) > 3)
+select count (ed.id)
+from gr15_equipodeportista ed
+where ed.tipodoc = new.tipodoc
+and ed.nrodoc = new.nrodoc
+and (extract (year from ed.fecha_inscripcion)) = (extract (year from new.fecha_inscripcion))) > 3)
 THEN
 RAISE EXCEPTION 'El deportista no puede inscribirse en un nuevo equipo, ya se inscribió a más de 3 dentro de este año';
 
@@ -50,13 +48,13 @@ language 'plpgsql';
 
 --TRIGGER
 
-CREATE TRIGGER tr_controlarCantEquiposAnual 
-AFTER INSERT ON gr15_inscripcion 
-FOR EACH ROW EXECUTE PROCEDURE fn_gr15_controlarCantEquiposAnual();
+CREATE TRIGGER tr_gr15_controlarCantEquiposAnual 
+AFTER INSERT ON gr15_equipodeportista 
+FOR EACH ROW EXECUTE PROCEDURE trfn_gr15_controlarCantEquiposAnual();
 
 --Punto B-c
 
-CREATE OR REPLACE FUNCTION FN_GR15_controlarFechaLimite()
+CREATE OR REPLACE FUNCTION TRFN_GR15_controlarFechaLimite()
 returns trigger AS $$
 DECLARE
 BEGIN
@@ -74,48 +72,70 @@ language 'plpgsql';
 
 --TRIGGER
 
-CREATE TRIGGER tr_controlarFechaLimite
+CREATE TRIGGER tr_gr15_controlarFechaLimite
 AFTER INSERT ON gr15_inscripcion 
-FOR EACH ROW EXECUTE PROCEDURE fn_gr15_controlarFechaLimite();
+FOR EACH ROW EXECUTE PROCEDURE trfn_gr15_controlarFechaLimite();
 
 --Punto B-d
 
 alter table gr15_categoria
 add constraint edadMinima
-check ((edadMaxima - edadMinima) >=10);
+check ((edadMaxima - edadMinima) <10);
 
 --Punto B-e
 
 alter table gr15_inscripcion
-add constraint equipo
+add constraint gr15_equipo
 check ( ((tipoDoc IS NULL) AND (nroDoc IS NULL)) AND (Equipo_id IS NOT null ) 
 OR ((tipoDoc IS NOT NULL) AND (nroDoc IS NOT NULL)) AND (Equipo_id IS null ));
 
 --Punto B-f
 
---FALTAAAAA
+
+CREATE OR REPLACE FUNCTION TRFN_GR15_controlarJuezDeportista()
+returns trigger AS $$
+DECLARE
+BEGIN
+if((new.idCompetencia in (select jc.idCompetencia
+from gr15_juezcompetencia jc
+where jc.tipodoc = new.tipodoc
+and jc.nrodoc = new.nrodoc)))
+THEN
+RAISE EXCEPTION 'Imposible realizar la inscripción, quien se quiere inscribir es juez de la misma';
+else return new;
+end if;
+return new;
+end;$$
+language 'plpgsql';
+
+
+--TRIGGER
+
+CREATE TRIGGER tr_gr15_controlarJuezDeportista
+AFTER INSERT ON gr15_inscripcion 
+FOR EACH ROW EXECUTE PROCEDURE trfn_gr15_controlarJuezDeportista();
 
 
 --punto B-g
 
 
 
-CREATE OR REPLACE FUNCTION FN_GR15_controlarCompetenciaGrupal()
+CREATE OR REPLACE FUNCTION TRFN_GR15_controlarCompetenciaGrupal()
 returns trigger AS $$
 DECLARE
 BEGIN
 if((select c.individual
 from GR15_competencia c
-where (c.idCompetencia = new.idCompetencia)) = 1')
+where (c.idCompetencia = new.idCompetencia)) = '1')
 and (new.Equipo_id IS NOT NULL)
 THEN
-RAISE EXCEPTION 'Imposible realizar la inscripción, pues la competencia a al que se quiere inscribir es individual';
+RAISE EXCEPTION 'Imposible realizar la inscripción, pues la competencia a la que se quiere inscribir es individual';
 else if((select c.individual
 from GR15_competencia c
 where (c.idCompetencia = new.idCompetencia)) = '0')
 and (new.Equipo_id IS NULL)
 THEN
-RAISE EXCEPTION 'Imposible realizar la inscripción, pues la competencia a al que se quiere inscribir es grupal';
+RAISE EXCEPTION 'Imposible realizar la inscripción, pues la competencia a la que se quiere inscribir es grupal';
 else return new;
 end if;
 end if;
@@ -126,7 +146,25 @@ language 'plpgsql';
 
 --TRIGGER
 
-CREATE TRIGGER tr_controlarCompetenciaGrupal
+CREATE TRIGGER tr_gr15_controlarCompetenciaGrupal
 AFTER INSERT ON gr15_inscripcion 
-FOR EACH ROW EXECUTE PROCEDURE fn_gr15_controlarCompetenciaGrupal();
+FOR EACH ROW EXECUTE PROCEDURE trfn_gr15_controlarCompetenciaGrupal();
 
+
+--CREACION DE VISTAS
+--PUNTO D1
+create view vw_gr15_ordenarCompenciasPorDisciplinas 
+as select * 
+from gr15_competencia
+order by cdodisciplina
+
+
+
+--d2 revisar
+select distinct c.idcompetencia
+from gr15_competencia c, gr15_clasificacioncompetencia cc, gr15_inscripcion i
+where  i.idcompetencia = cc.idcompetencia
+and i.tipodoc = cc.tipodoc 
+and i.nrodoc = cc.nrodoc
+and cc.puntosGeneral is null
+or cc.puntosCategoria is null
